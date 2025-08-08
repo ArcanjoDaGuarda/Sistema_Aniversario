@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Sistema de Aniversários</title>
 <style>
-    /* Fundo com confetes usando CSS */
+    /* Mesma estilização que você aprovou */
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         margin: 0;
@@ -16,7 +16,6 @@
         position: relative;
         overflow-x: hidden;
     }
-    /* Confetes decorativos */
     body::before {
         content: "";
         position: fixed;
@@ -104,6 +103,9 @@
     }
     .tab-content {
         margin-bottom: 40px;
+    }
+    .hidden {
+        display: none;
     }
     .card {
         background: #fff0f0;
@@ -287,10 +289,8 @@
 </div>
 
 <script>
-    // Carregar dados
     let aniversarios = JSON.parse(localStorage.getItem("aniversarios")) || [];
 
-    // Atualiza botão ativo no menu
     function setActiveButton(id) {
         document.querySelectorAll("nav button").forEach((btn) => {
             btn.classList.remove("active");
@@ -304,7 +304,6 @@
         );
         document.getElementById(tab).classList.remove("hidden");
 
-        // Atualizar menu ativo
         if (tab === "aniversariantes") setActiveButton("btnAniversariantes");
         else if (tab === "adicionar") setActiveButton("btnAdicionar");
         else if (tab === "alterar") setActiveButton("btnAlterar");
@@ -368,14 +367,14 @@
                 (aniversarioEsteAno - hoje) / (1000 * 60 * 60 * 24)
             );
 
-            // Corrige diferença para datas no fim do ano anterior
+            // Ajuste para datas no fim do ano passado
             if (diffDias < -182) diffDias += 365;
 
             if (dataNasc.toISOString().slice(5, 10) === hojeStr) {
                 divHoje.innerHTML += `<div class='card'>🎉 Parabéns <b>${pessoa.nome}</b>! Você está fazendo <b>${calcularIdade(
                     pessoa.data
                 )}</b> anos! 🥳</div>`;
-            } else if (diffDias > 0 && diffDias <= 365) {
+            } else if (diffDias > 0 && diffDias <= 60) {
                 proximos.push({ ...pessoa, dias: diffDias });
             } else if (diffDias < 0 && diffDias >= -30) {
                 recentes.push(pessoa);
@@ -383,26 +382,30 @@
         });
 
         proximos.sort((a, b) => a.dias - b.dias);
-        proximos.forEach(
-            (p) =>
-                (divProximos.innerHTML += `<div class='card'>🎁 ${p.nome} - em ${p.dias} dias (${new Date(
-                    p.data
-                ).toLocaleDateString("pt-BR")})</div>`)
-        );
 
-        recentes.forEach(
-            (p) =>
-                (divRecentes.innerHTML += `<div class='card'>🎈 ${p.nome} - ${new Date(
-                    p.data
-                ).toLocaleDateString("pt-BR")}</div>`)
-        );
+        if(proximos.length === 0) {
+            divProximos.innerHTML = "<p>🎁 Nenhum aniversário próximo nos próximos 60 dias.</p>";
+        } else {
+            proximos.forEach(
+                (p) =>
+                    (divProximos.innerHTML += `<div class='card'>🎁 Faltam apenas <b>${p.dias}</b> dias para o aniversário de <b>${p.nome}</b>! (${new Date(
+                        p.data
+                    ).toLocaleDateString("pt-BR")})</div>`)
+            );
+        }
 
         if (!divHoje.innerHTML)
             divHoje.innerHTML = "<p>🎂 Ninguém fazendo aniversário hoje.</p>";
-        if (!divProximos.innerHTML)
-            divProximos.innerHTML = "<p>🎁 Nenhum aniversário próximo.</p>";
         if (!divRecentes.innerHTML)
             divRecentes.innerHTML = "<p>🎈 Nenhum aniversário recente.</p>";
+        else {
+            recentes.forEach(
+                (p) =>
+                    (divRecentes.innerHTML += `<div class='card'>🎈 ${p.nome} - ${new Date(
+                        p.data
+                    ).toLocaleDateString("pt-BR")}</div>`)
+            );
+        }
     }
 
     function listarAlterar() {
@@ -437,7 +440,7 @@
         }
     }
 
-    // Inicializa mostrando a aba aniversariantes e marca botão ativo
+    // Inicializa com a aba aniversariantes ativa
     showTab("aniversariantes");
 </script>
 </body>
