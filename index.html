@@ -342,7 +342,8 @@
 
     function atualizarLista() {
         let hoje = new Date();
-        let hojeStr = hoje.toISOString().slice(5, 10);
+        let hojeDia = hoje.getDate();
+        let hojeMes = hoje.getMonth();
 
         let divHoje = document.getElementById("hoje");
         let divProximos = document.getElementById("proximos");
@@ -357,33 +358,39 @@
 
         aniversarios.forEach((pessoa) => {
             let dataNasc = new Date(pessoa.data);
-            let aniversarioEsteAno = new Date(
-                hoje.getFullYear(),
-                dataNasc.getMonth(),
-                dataNasc.getDate()
-            );
+            let dia = dataNasc.getDate();
+            let mes = dataNasc.getMonth();
 
+            // Próximo aniversário considerando ano atual ou próximo ano
+            let aniversarioEsteAno = new Date(hoje.getFullYear(), mes, dia);
+            if (aniversarioEsteAno < hoje) {
+                aniversarioEsteAno = new Date(hoje.getFullYear() + 1, mes, dia);
+            }
+
+            // Diferença em dias
             let diffDias = Math.floor(
                 (aniversarioEsteAno - hoje) / (1000 * 60 * 60 * 24)
             );
 
-            // Ajuste para datas no fim do ano passado
-            if (diffDias < -182) diffDias += 365;
-
-            if (dataNasc.toISOString().slice(5, 10) === hojeStr) {
+            // Aniversário hoje
+            if (dia === hojeDia && mes === hojeMes) {
                 divHoje.innerHTML += `<div class='card'>🎉 Parabéns <b>${pessoa.nome}</b>! Você está fazendo <b>${calcularIdade(
                     pessoa.data
                 )}</b> anos! 🥳</div>`;
-            } else if (diffDias > 0 && diffDias <= 60) {
+            }
+            // Próximos aniversários até 60 dias
+            else if (diffDias > 0 && diffDias <= 60) {
                 proximos.push({ ...pessoa, dias: diffDias });
-            } else if (diffDias < 0 && diffDias >= -30) {
+            }
+            // Aniversários nos últimos 30 dias (passados)
+            else if (diffDias < 0 && diffDias >= -30) {
                 recentes.push(pessoa);
             }
         });
 
         proximos.sort((a, b) => a.dias - b.dias);
 
-        if(proximos.length === 0) {
+        if (proximos.length === 0) {
             divProximos.innerHTML = "<p>🎁 Nenhum aniversário próximo nos próximos 60 dias.</p>";
         } else {
             proximos.forEach(
@@ -396,9 +403,10 @@
 
         if (!divHoje.innerHTML)
             divHoje.innerHTML = "<p>🎂 Ninguém fazendo aniversário hoje.</p>";
-        if (!divRecentes.innerHTML)
+
+        if (recentes.length === 0) {
             divRecentes.innerHTML = "<p>🎈 Nenhum aniversário recente.</p>";
-        else {
+        } else {
             recentes.forEach(
                 (p) =>
                     (divRecentes.innerHTML += `<div class='card'>🎈 ${p.nome} - ${new Date(
