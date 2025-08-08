@@ -113,6 +113,395 @@
     }
 
     .card {
+      position: relative;
+      background: #fff0f0;
+      border-radius: 15px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 8px 15px rgba(255, 111, 97, 0.25);
+      font-size: 17px;
+      font-weight: 600;
+      color: #b23a3a;
+      transition: box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 90px; /* espaço para botão */
+    }
+    .card:hover {
+      box-shadow: 0 12px 25px rgba(255, 111, 97, 0.45);
+    }
+
+    .delete-btn {
+      background-color: #d92c2c;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 16px;
+      font-weight: 700;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      flex-shrink: 0;
+    }
+    .delete-btn:hover {
+      background-color: #a72222;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+    input[type="text"],
+    input[type="date"],
+    input[type="search"],
+    input[type="password"] {
+      border: 2px solid #ff8a65;
+      border-radius: 10px;
+      padding: 12px 15px;
+      font-size: 17px;
+      transition: border-color 0.3s ease;
+      width: 100%;
+      box-sizing: border-box;
+      font-weight: 500;
+      color: #555;
+    }
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    input[type="search"]:focus,
+    input[type="password"]:focus {
+      outline: none;
+      border-color: #ff6f61;
+      box-shadow: 0 0 8px #ff6f61aa;
+    }
+    button {
+      background-color: #ff6f61;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 18px;
+      padding: 14px 0;
+      border-radius: 30px;
+      width: 100%;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      user-select: none;
+    }
+    button:hover {
+      background-color: #ff8a65;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        flex-direction: column;
+        align-items: center;
+        position: static;
+        top: auto;
+        padding: 15px 0;
+      }
+      nav button {
+        max-width: none;
+        width: 90%;
+        margin-bottom: 10px;
+        font-size: 20px;
+        border-radius: 40px;
+      }
+      .container {
+        margin: 20px 10px 40px;
+        padding: 20px 20px 40px;
+        border-radius: 15px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        font-size: 24px;
+        margin-bottom: 14px;
+      }
+      .card {
+        font-size: 16px;
+        padding: 16px 20px;
+        margin-bottom: 14px;
+        position: relative;
+        padding-right: 0;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+      }
+      .delete-btn {
+        position: static;
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        font-size: 17px;
+        padding: 12px 0;
+        border-radius: 30px;
+        transform: none;
+        min-width: auto;
+      }
+    }
+
+    #login-container {
+      max-width: 400px;
+      margin: 120px auto;
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      padding: 30px 25px;
+      text-align: center;
+      z-index: 20;
+      position: relative;
+    }
+    #login-container h2 {
+      color: #ff6f61;
+      margin-bottom: 25px;
+      font-size: 28px;
+    }
+    #login-error {
+      color: #d92c2c;
+      margin-bottom: 20px;
+      font-weight: 700;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div id="login-container">
+  <h2>Login</h2>
+  <div id="login-error">Usuário ou senha incorretos!</div>
+  <div class="form-group">
+    <input type="text" id="loginUser" placeholder="Usuário" autocomplete="off" />
+  </div>
+  <div class="form-group">
+    <input type="password" id="loginPass" placeholder="Senha" autocomplete="off" />
+  </div>
+  <button id="btnLogin" onclick="fazerLogin()">Logar</button>
+</div>
+
+<div id="siteContent" style="display:none;">
+<header>🎉 Sistema de Aniversários 🎂</header>
+
+<nav>
+  <button id="btnAniversariantes" onclick="showTab('aniversariantes')">Aniversariantes</button>
+  <button id="btnAdicionar" onclick="showTab('adicionar')">Adicionar Aniversário</button>
+  <button id="btnAlterar" onclick="showTab('alterar')">Alterar Aniversários</button>
+</nav>
+
+<div class="container">
+  <div id="aniversariantes" class="tab-content">
+    <h2>🎂 Aniversariantes de Hoje</h2>
+    <div id="hoje"></div>
+
+    <h2>🎁 Próximos Aniversários</h2>
+    <div id="proximos"></div>
+
+    <h2>🎈 Aniversários dos Últimos 30 Dias</h2>
+    <div id="recentes"></div>
+  </div>
+
+  <div id="adicionar" class="tab-content hidden">
+    <h2>➕ Adicionar Aniversário</h2>
+    <div class="card">
+      <div class="form-group">
+        <label for="nome">Nome Completo:</label>
+        <input type="text" id="nome" placeholder="Ex: João da Silva" />
+      </div>
+      <div class="form-group">
+        <label for="data">Data de Nascimento:</label>
+        <input type="date" id="data" />
+      </div>
+      <button onclick="adicionarAniversario()">Salvar</button>
+    </div>
+  </div>
+
+  <div id="alterar" class="tab-content hidden">
+    <h2>✏️ Alterar / Excluir Aniversários</h2>
+    <input
+      type="text"
+      id="pesquisa"
+      placeholder="Pesquisar nome..."
+      oninput="listarAlterar()"
+    />
+    <div id="listaAlterar"></div>
+  </div>
+</div>
+</div>
+
+<script>
+  let aniversarios = JSON.parse(localStorage.getItem("aniversarios")) || [];
+  let logado = false;
+
+  function setActiveButton(id) {
+    document.querySelectorAll("nav button").forEach((btn) => {
+      btn.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+  }
+
+  function showTab(tab) {
+    if (!logado) return; // bloqueia se não estiver logado
+    document.querySelectorAll(".tab-content").forEach((div) =>
+      div.classList.add("hidden")
+    );
+    document.getElementById(tab).classList.remove("hidden");
+
+    if (tab === "aniversariantes") setActiveButton("btnAniversariantes");
+    else if (tab === "adicionar") setActiveButton("btnAdicionar");
+    else if (tab === "alterar") setActiveButton("btnAlterar");
+
+    if (tab === "aniversariantes") atualizarLista();
+    if (tab === "alterar") listarAlterar();
+  }
+
+  function adicionarAniversario() {
+    let nome = document.getElementById("nome").value.trim();
+    let data = document.getElementById("data").value;
+
+    if (!nome || !data) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    aniversarios.push({ nome, data });
+    localStorage.setItem("aniversarios", JSON.stringify(aniversarios));
+
+    document.getElementById("nome").value = "";
+    document.getElementById("data").value = "";
+
+    alert("Aniversário adicionado com sucesso!");
+    showTab("aniversariantes");
+  }
+
+  function calcularIdade(dataNasc) {
+    let hoje = new Date();
+    let nasc = new Date(dataNasc);
+    let idade = hoje.getFullYear() - nasc.getFullYear();
+    let mes = hoje.getMonth() - nasc.getMonth();
+    if (mes < 0 || (mes === 0 && hoje.getDate() < nasc.getDate())) idade--;
+    return idade;
+  }
+
+  function atualizarLista() {
+    if (!logado) return;
+    let hoje = new Date();
+    let hojeDia = hoje.getDate();
+    let hojeMes = hoje.getMonth();
+
+    let divHoje = document.getElementById("hoje");
+    let divProximos = document.getElementById("proximos");
+    let divRecentes = document.getElementById("recentes");
+
+    divHoje.innerHTML = "";
+    divProximos.innerHTML = "";
+    divRecentes.innerHTML = "";
+
+    let proximos = [];
+    let recentes = [];
+
+    aniversarios.forEach((pessoa) => {
+      let dataNasc = new Date(pessoa.data);
+      let dia = dataNasc.getDate();
+      let mes = dataNasc.getMonth();
+
+      // Próximo aniversário da pessoa (considerando só dia e mês)
+      let aniversarioEsteAno = new Date(hoje.getFullYear(), mes, dia);
+
+      // Se já passou esse ano, pega o próximo ano
+      if (aniversarioEsteAno < new Date(hoje.getFullYear(), hojeMes, hojeDia)) {
+        aniversarioEsteAno = new Date(hoje.getFullYear() + 1, mes, dia);
+      }
+
+      // Diferença em dias para o próximo aniversário
+      const diffTime = aniversarioEsteAno.getTime() - hoje.getTime();
+      const diffDias = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (dia === hojeDia && mes === hojeMes) {
+        divHoje.innerHTML += `<div class='card'>🎉 Parabéns <b>${pessoa.nome}</b>! Você está fazendo <b>${calcularIdade(
+          pessoa.data
+        )}</b> anos! 🥳</div>`;
+      } else if (diffDias > 0 && diffDias <= 60) {
+        proximos.push({ ...pessoa, dias: diffDias });
+      } else {
+        // Para os recentes, pegar aniversários dos últimos 30 dias
+        let ultimoAniversario = new Date(hoje.getFullYear(), mes, dia);
+        if (ultimoAniversario > hoje) {
+          ultimoAniversario = new Date(hoje.getFullYear() - 1, mes, dia);
+        }
+        const diffRecente = Math.ceil(
+          (hoje.getTime() - ultimoAniversario.getTime()) / (1000 * 60 * 60 * 24)
+        );
+        if (diffRecente > 0 && diffRecente <= 30) {
+          recentes.push(pessoa);
+        }
+      }
+    });
+
+    proximos.sort((a, b) => a.dias - b.dias);
+
+    if (proximos.length === 0) {
+      divProximos.innerHTML =
+        "<p>🎁 Nenhum aniversário próximo nos próximos 60 dias.</p>";
+    } else {
+      proximos.forEach(
+        (p) =>
+          (divProximos.innerHTML += `<div class='card'>🎁 Faltam apenas <b>${p.dias}</b> dias para o aniversário de <b>${p.nome}</b>! (${new Date(
+            p.data
+          ).toLocaleDateString("pt-BR")})</div>`)
+      );
+    }
+
+    if (!divHoje.innerHTML)
+      divHoje.innerHTML = "<p>🎂 Ninguém fazendo aniversário hoje.</p>";
+
+    if (recentes.length === 0) {
+      divRecentes.innerHTML = "<p>🎈 Nenhum aniversário recente.</p>";
+    } else {
+      recentes.forEach(
+        (p) =>
+          (divRecentes.innerHTML += `<div class='card'>🎈 ${p.nome} - ${new Date(
+            p.data
+          ).toLocaleDateString("pt-BR")}</div>`)
+      );
+    }
+  }
+
+  function listarAlterar() {
+    if (!logado) return;
+    let termo = document.getElementById("pesquisa").value.toLowerCase();
+    let divLista = document.getElementById("listaAlterar");
+    divLista.innerHTML = "";
+
+    aniversarios
+      .filter((p) => p.nome.toLowerCase().includes(termo))
+      .forEach((pessoa, index) => {
+        divLista.innerHTML += `
+            <div class="card">
+              <span><b>${pessoa.nome}</b> - ${new Date(
+          pessoa.data
+        ).toLocaleDateString("pt-BR")}</span>
+              <button class="delete-btn" onclick="excluirAniversario(${index})">Excluir</button>
+            </div>
+          `;
+      });
+  }
+
+  function excluirAniversario(index) {
+    if (confirm("Tem certeza que deseja excluir este aniversário?")) {
+      aniversarios.splice(index, 1);
+      localStorage.setItem("aniversarios", JSON.stringify(aniversarios));
+      listarAlterar();
+      atualizarLista();
+    }
+  }
+
+  function fazerLogin() {
+    const user = document.getElementById("loginUser").value.trim();
+    const pass = document.getElementById("loginPass").      margin-bottom: 40px;
+    }
+    .hidden {
+      display: none;
+    }
+
+    .card {
       background: #fff0f0;
       border-radius: 15px;
       padding: 18px 22px;
